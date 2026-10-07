@@ -348,13 +348,13 @@ static bool nvenc_check(void)
 	const char *nvenc_ver = config_get_string(config, "general", "nvenc_ver");
 	const char *cuda_ver = config_get_string(config, "general", "cuda_ver");
 	const char *driver_ver = config_get_string(config, "general", "driver_ver");
-	sscanf(driver_ver, "%d.%d", &driver_version_major, &driver_version_minor); // Parse out major/minor for some brokenness checks
+	sscanf(driver_ver, "%d.%d", &driver_version_major,
+	       &driver_version_minor); // Parse out major/minor for some brokenness checks
 
 	blog(LOG_INFO,
 	     "[obs-nvenc] NVENC version: %d.%d (compiled) / %s (driver), "
 	     "CUDA driver version: %s, AV1 supported: %s",
-	     NVCODEC_CONFIGURED_VERSION >> 4, NVCODEC_CONFIGURED_VERSION & 0xf, nvenc_ver, cuda_ver,
-	     "false");
+	     NVCODEC_CONFIGURED_VERSION >> 4, NVCODEC_CONFIGURED_VERSION & 0xf, nvenc_ver, cuda_ver, "false");
 
 fail:
 	if (config)
