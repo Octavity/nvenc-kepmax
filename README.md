@@ -22,32 +22,36 @@ This plugin has been adapted to use the [official plugin template](https://githu
 
 Grab the **most recent release from the [Releases section](https://github.com/Octavity/nvenc-kepmax/releases)** and download the one appropriate for your platform.
 
-**You must have the NVIDIA driver v471 installed. Minor version differences like v470 or v475 should be fine. Major differences like v450 or v515 are unlikely to work.** Grab the most recent driver that your graphics card supports.
-
-
-**KEPMAX NOTE** This works for gtx570ti, so this should work regardless of driver number.
+**You must build against the old NVENC headers (this fork vendors them for you). The NVIDIA
+driver version does not matter as much as the NVENC API version the plugin was compiled
+against — see the build notes below.**
 
 ### How to build manually
 
 #### Linux (x86_64)
 
-Install the build prerequisites for your distribution. You need `libobs` headers, the
-NVENC (`ffnvcodec`) headers, CMake, Ninja and a C/C++ compiler:
+Install the build prerequisites for your distribution. You need `libobs` headers, CMake,
+Ninja and a C/C++ compiler. **You do not need a system `ffnvcodec`/NVENC headers package** —
+the correct (old) NVENC headers are vendored in `deps/nv-codec-headers`:
 
 ```sh
 # Arch / CachyOS / Manjaro
-sudo pacman -S base-devel cmake ninja ffnvcodec-headers obs-studio
+sudo pacman -S base-devel cmake ninja obs-studio
 
-# Debian / Ubuntu (libobs-dev comes from the OBS PPA; the NVENC headers are built from source)
+# Debian / Ubuntu (libobs-dev comes from the OBS PPA)
 sudo add-apt-repository ppa:obsproject/obs-studio
 sudo apt update
-sudo apt install build-essential cmake ninja-build libobs-dev git
-git clone https://github.com/FFmpeg/nv-codec-headers.git /tmp/nv-codec-headers
-sudo make -C /tmp/nv-codec-headers install
+sudo apt install build-essential cmake ninja-build libobs-dev
 ```
 
-If your NVENC headers live somewhere non-standard, point CMake at them by appending
-`-DFFnvcodec_INCLUDE_DIR=/path/to/include` to the `cmake --preset` command.
+> **Why the headers are vendored:** Kepler and GM10x Maxwell GPUs only answer **NVENC API
+> ≤ 11.1**, and the NVENC API version is baked in at compile time. Building against newer
+> system headers (e.g. the 12.x/13.x packages shipped by modern distros) makes the driver
+> reject the encode session, and the encoders silently never appear. This fork therefore
+> always builds against the pinned API 11.1 headers in `deps/nv-codec-headers` by default.
+
+If you *want* to use the system headers instead, configure with `-DFFnvcodec_USE_BUNDLED=OFF`
+(or point at a specific copy with `-DFFnvcodec_INCLUDE_DIR=/path/to/include`).
 
 Then configure, build and install with the `linux-x86_64` preset:
 
@@ -110,6 +114,8 @@ the `rundir\RelWithDebInfo` folder inside the build directory.
 
 Mostly because I had a spare Kepler card I kept as a secondary/tertiary graphics card and while using it is more of a novelty than anything else, I still want NVENC to be available with it in the future. Providing support for these cards is unlikely to get any easier with time, and I don't plan on doing anything other than the extreme basics with this plugin (pull requests are more than welcome though).
 
-Do note that using this plugin is only a solution if you are OK and able to keep an older NVIDIA driver installed, which may become more difficult with newer operating system updates and releases.
+Do note that this only works while the NVIDIA driver still ships an NVENC library that speaks
+NVENC API 11.1 for your GPU (`libnvidia-encode.so`, which current drivers still do for
+Kepler/GM10x). If NVIDIA ever drops that entirely, no plugin can bring it back.
 
 If Nouveau had video encoding support via VA-API I wouldn't even have bothered with this plugin, but they only have decoding support, and only up until Kepler. NVENC is listed on a TODO list with a "Hard" difficulty attached to it, so I imagine this is not going to be ready anytime soon.

@@ -82,4 +82,7 @@ target_link_libraries(
   PRIVATE OBS::libobs OBS::opts-parser FFnvcodec::FFnvcodec $<$<PLATFORM_ID:Linux>:OBS::glad>
 )
 
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE $<$<BOOL:${ENABLE_NVENC_FFMPEG_IDS}>:REGISTER_FFMPEG_IDS>)
+target_compile_definitions(
+  ${CMAKE_PROJECT_NAME}
+  PRIVATE $<$<BOOL:${ENABLE_NVENC_FFMPEG_IDS}>:REGISTER_FFMPEG_IDS> $<$<BOOL:${ENABLE_HEVC}>:ENABLE_HEVC>
+)

@@ -29,26 +29,54 @@ The following cache variables may also be set:
 ``FFnvcodec_INCLUDE_DIR``
   Directory containing ``nvEncodeAPI.h``.
 
+Options
+^^^^^^^
+
+``FFnvcodec_USE_BUNDLED``
+  When ``ON`` (the default) the headers vendored in
+  ``deps/nv-codec-headers`` are preferred over the system headers. The vendored
+  copy is pinned to an old NVENC API version on purpose, because Kepler and
+  GM10x Maxwell hardware only answers NVENC API <= 11.1; see the README in that
+  directory. Set to ``OFF`` to use whatever the system provides.
+
 #]=======================================================================]
 
 include(FindPackageHandleStandardArgs)
+
+option(
+  FFnvcodec_USE_BUNDLED
+  "Prefer the NVENC headers vendored in deps/nv-codec-headers over the system headers"
+  ON
+)
+
+# The bundled headers are vendored at an old NVENC API version so that Kepler
+# and GM10x Maxwell cards (NVENC API <= 11.1) keep working. Look here first.
+set(_ffnvcodec_bundled_include "${CMAKE_CURRENT_LIST_DIR}/../../deps/nv-codec-headers/include")
+
+if(FFnvcodec_USE_BUNDLED AND EXISTS "${_ffnvcodec_bundled_include}/ffnvcodec/nvEncodeAPI.h")
+  set(FFnvcodec_INCLUDE_DIR "${_ffnvcodec_bundled_include}" CACHE PATH "FFnvcodec include directory")
+endif()
 
 find_package(PkgConfig QUIET)
 if(PKG_CONFIG_FOUND)
   pkg_search_module(PC_FFnvcodec QUIET ffnvcodec)
 endif()
 
-find_path(
-  FFnvcodec_INCLUDE_DIR
-  NAMES ffnvcodec/nvEncodeAPI.h
-  HINTS ${PC_FFnvcodec_INCLUDE_DIRS}
-  PATHS /usr/include /usr/local/include
-  DOC "FFnvcodec include directory"
-)
+if(NOT FFnvcodec_INCLUDE_DIR)
+  find_path(
+    FFnvcodec_INCLUDE_DIR
+    NAMES ffnvcodec/nvEncodeAPI.h
+    HINTS ${PC_FFnvcodec_INCLUDE_DIRS}
+    PATHS /usr/include /usr/local/include
+    DOC "FFnvcodec include directory"
+  )
+endif()
 
-if(PC_FFnvcodec_VERSION VERSION_GREATER 0)
-  set(FFnvcodec_VERSION ${PC_FFnvcodec_VERSION})
-elseif(EXISTS "${FFnvcodec_INCLUDE_DIR}/ffnvcodec/nvEncodeAPI.h")
+# Parse the version straight from the header file that will actually be
+# compiled against. This matters because pkg-config may report the system
+# version (e.g. 13.1) even when we deliberately picked the older bundled
+# headers, which would mislabel the build.
+if(EXISTS "${FFnvcodec_INCLUDE_DIR}/ffnvcodec/nvEncodeAPI.h")
   file(
     STRINGS
     "${FFnvcodec_INCLUDE_DIR}/ffnvcodec/nvEncodeAPI.h"
@@ -62,6 +90,8 @@ elseif(EXISTS "${FFnvcodec_INCLUDE_DIR}/ffnvcodec/nvEncodeAPI.h")
   set(FFnvcodec_VERSION "${_version_major}.${_version_minor}")
   unset(_version_major)
   unset(_version_minor)
+elseif(PC_FFnvcodec_VERSION VERSION_GREATER 0)
+  set(FFnvcodec_VERSION ${PC_FFnvcodec_VERSION})
 else()
   if(NOT FFnvcodec_FIND_QUIETLY)
     message(AUTHOR_WARNING "Failed to find FFnvcodec version.")
