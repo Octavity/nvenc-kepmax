@@ -812,9 +812,9 @@ reroute:
 
 	switch (codec) {
 	case CODEC_H264:
-		return obs_encoder_create_rerouted(encoder, "obs_nvenc_h264_soft");
+		return obs_encoder_create_rerouted(encoder, "nvenc_kepmax_h264_soft");
 	case CODEC_HEVC:
-		return obs_encoder_create_rerouted(encoder, "obs_nvenc_hevc_soft");
+		return obs_encoder_create_rerouted(encoder, "nvenc_kepmax_hevc_soft");
 	}
 
 	return NULL;
@@ -1170,7 +1170,7 @@ static bool nvenc_sei_data(void *data, uint8_t **sei, size_t *size)
 }
 
 struct obs_encoder_info h264_nvenc_info = {
-	.id = "obs_nvenc_h264_tex",
+	.id = "nvenc_kepmax_h264_tex",
 	.codec = "h264",
 	.type = OBS_ENCODER_VIDEO,
 	.caps = OBS_ENCODER_CAP_PASS_TEXTURE | OBS_ENCODER_CAP_DYN_BITRATE | OBS_ENCODER_CAP_ROI,
@@ -1191,7 +1191,7 @@ struct obs_encoder_info h264_nvenc_info = {
 
 #ifdef ENABLE_HEVC
 struct obs_encoder_info hevc_nvenc_info = {
-	.id = "obs_nvenc_hevc_tex",
+	.id = "nvenc_kepmax_hevc_tex",
 	.codec = "hevc",
 	.type = OBS_ENCODER_VIDEO,
 	.caps = OBS_ENCODER_CAP_PASS_TEXTURE | OBS_ENCODER_CAP_DYN_BITRATE | OBS_ENCODER_CAP_ROI,
@@ -1212,7 +1212,7 @@ struct obs_encoder_info hevc_nvenc_info = {
 #endif
 
 struct obs_encoder_info h264_nvenc_soft_info = {
-	.id = "obs_nvenc_h264_soft",
+	.id = "nvenc_kepmax_h264_soft",
 	.codec = "h264",
 	.type = OBS_ENCODER_VIDEO,
 	.caps = OBS_ENCODER_CAP_DYN_BITRATE | OBS_ENCODER_CAP_ROI | OBS_ENCODER_CAP_INTERNAL,
@@ -1230,7 +1230,7 @@ struct obs_encoder_info h264_nvenc_soft_info = {
 
 #ifdef ENABLE_HEVC
 struct obs_encoder_info hevc_nvenc_soft_info = {
-	.id = "obs_nvenc_hevc_soft",
+	.id = "nvenc_kepmax_hevc_soft",
 	.codec = "hevc",
 	.type = OBS_ENCODER_VIDEO,
 	.caps = OBS_ENCODER_CAP_DYN_BITRATE | OBS_ENCODER_CAP_ROI | OBS_ENCODER_CAP_INTERNAL,

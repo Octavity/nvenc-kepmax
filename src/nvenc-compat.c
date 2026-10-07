@@ -34,9 +34,9 @@ static void *nvenc_reroute(enum codec_type codec, obs_data_t *settings, obs_enco
 
 	switch (codec) {
 	case CODEC_H264:
-		return obs_encoder_create_rerouted(encoder, texture ? "obs_nvenc_h264_tex" : "obs_nvenc_h264_soft");
+		return obs_encoder_create_rerouted(encoder, texture ? "nvenc_kepmax_h264_tex" : "nvenc_kepmax_h264_soft");
 	case CODEC_HEVC:
-		return obs_encoder_create_rerouted(encoder, texture ? "obs_nvenc_hevc_tex" : "obs_nvenc_hevc_soft");
+		return obs_encoder_create_rerouted(encoder, texture ? "nvenc_kepmax_hevc_tex" : "nvenc_kepmax_hevc_soft");
 	}
 
 	return NULL;

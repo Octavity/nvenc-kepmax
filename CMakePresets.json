@@ -97,6 +97,23 @@
         "CMAKE_COMPILE_WARNING_AS_ERROR": true,
         "ENABLE_CCACHE": true
       }
+    },
+    {
+      "name": "linux-x86_64",
+      "displayName": "Linux x86_64",
+      "description": "Build for Linux x86_64 using distro-native install paths",
+      "inherits": ["template"],
+      "binaryDir": "${sourceDir}/build_linux",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "generator": "Ninja",
+      "warnings": {"dev": true, "deprecated": true},
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
     }
   ],
   "buildPresets": [
@@ -140,6 +157,13 @@
       "configurePreset": "ubuntu-ci-x86_64",
       "displayName": "Ubuntu x86_64 CI",
       "description": "Ubuntu CI build for x86_64",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "linux-x86_64",
+      "configurePreset": "linux-x86_64",
+      "displayName": "Linux x86_64",
+      "description": "Linux build for x86_64",
       "configuration": "RelWithDebInfo"
     }
   ]

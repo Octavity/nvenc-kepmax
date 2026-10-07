@@ -29,18 +29,82 @@ Grab the **most recent release from the [Releases section](https://github.com/Oc
 
 ### How to build manually
 
-Make sure you have an appropriate version of `obs-studio` and `libobs` installed.
+#### Linux (x86_64)
 
-Run the following commands. Change `ubuntu-x86_64` to `windows-x64` if making a windows build.
+Install the build prerequisites for your distribution. You need `libobs` headers, the
+NVENC (`ffnvcodec`) headers, CMake, Ninja and a C/C++ compiler:
+
+```sh
+# Arch / CachyOS / Manjaro
+sudo pacman -S base-devel cmake ninja ffnvcodec-headers obs-studio
+
+# Debian / Ubuntu (libobs-dev comes from the OBS PPA; the NVENC headers are built from source)
+sudo add-apt-repository ppa:obsproject/obs-studio
+sudo apt update
+sudo apt install build-essential cmake ninja-build libobs-dev git
+git clone https://github.com/FFmpeg/nv-codec-headers.git /tmp/nv-codec-headers
+sudo make -C /tmp/nv-codec-headers install
+```
+
+If your NVENC headers live somewhere non-standard, point CMake at them by appending
+`-DFFnvcodec_INCLUDE_DIR=/path/to/include` to the `cmake --preset` command.
+
+Then configure, build and install with the `linux-x86_64` preset:
+
+```sh
+cmake --preset linux-x86_64
+cmake --build --preset linux-x86_64
+```
+
+When it finishes, the plugin is staged inside the build directory:
 
 ```
-cmake --preset ubuntu-x86_64
-cmake --build --preset ubuntu-x86_64
+build_linux/rundir/RelWithDebInfo/nvenc-kepmax.so
+build_linux/rundir/RelWithDebInfo/nvenc-kepmax/locale/*.ini
 ```
 
-Once the commands finish, open the `build_x86_64` folder to see nvenc-kepmax.so or nvenc-kepmax.dll there.
+**Install for your user only (no `sudo`, recommended):**
 
-If using a non-Ubuntu based Linux, you can try the same preset as Ubuntu and see if it works. If it doesn't, you'll likely have to tinker around with the CMake settings until it works.
+```sh
+mkdir -p ~/.config/obs-studio/plugins/nvenc-kepmax/bin/64bit
+cp build_linux/rundir/RelWithDebInfo/nvenc-kepmax.so ~/.config/obs-studio/plugins/nvenc-kepmax/bin/64bit/
+cp -r build_linux/rundir/RelWithDebInfo/nvenc-kepmax ~/.config/obs-studio/plugins/nvenc-kepmax/data
+# the NVENC detection helper must live in the plugin's data folder as well:
+cp build_linux/src/tester/nvenc-kepmax-test ~/.config/obs-studio/plugins/nvenc-kepmax/data/
+```
+
+**Install system-wide (needs `sudo`):**
+
+```sh
+sudo cmake --install build_linux --prefix /usr
+```
+
+This places `nvenc-kepmax.so` in the OBS plugin directory (for example `/usr/lib/obs-plugins/`
+on Arch, or `/usr/lib/x86_64-linux-gnu/obs-plugins/` on Debian) and the locale files in
+`/usr/share/obs/obs-plugins/nvenc-kepmax/`.
+
+This fork registers its own encoder IDs (`nvenc_kepmax_*`), so it **coexists with the NVENC
+encoders that ship with OBS** — you do *not* need to remove or disable the bundled `obs-nvenc`
+plugin. In the encoder list the fork's encoders appear with a `(Kepler/Maxwell Plugin)` suffix,
+e.g. `NVIDIA NVENC H.264 (Kepler/Maxwell Plugin)`. (As noted above, they only show up when the
+`nvenc-kepmax-test` helper reports that your GPU and driver actually support them.)
+
+**Flatpak / Snap OBS:** the plugin cannot be loaded into the sandboxed build of OBS. Use a
+distribution-packaged (native) OBS instead.
+
+#### Windows / macOS
+
+Change the preset to `windows-x64` when making a Windows build. Builds for macOS are not
+currently supported by this fork (they can be attempted with the `macos` preset, but expect to
+tinker with the CMake settings until it works).
+
+```sh
+cmake --preset windows-x64
+cmake --build --preset windows-x64
+```
+
+Once the commands finish, the resulting `nvenc-kepmax.dll` (or `.so` for Linux) can be found in
+the `rundir\RelWithDebInfo` folder inside the build directory.
 
 ## Why
 
