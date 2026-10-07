@@ -1,9 +1,9 @@
 # NVENC Kepler/Maxwell Plugin
 
 > [!WARNING]
-> **Vibe-coded personal fork.** AI-written, unreviewed, tested on exactly one machine — mine. No support, no promises.
+> **Vibe-coded personal fork.** AI-written, unreviewed, tested on exactly one machine — mine. I can't promise support for this plugin in case it croaks or smthn.
 >
-> Made only for my own **GTX 750 Ti**. NVIDIA killed Kepler's NVENC block, and GM10x (750 / 750 Ti) shares it — "Maxwell" branding or not — so OBS 31+ dropped my card too. I'm still **pissed**.
+> Really made specifically for the **GTX 750 Ti**. NVIDIA killed support for Kepler's NVENC block, and GM10x (750 / 750 Ti) shares it. They killed support for a perfectly fine piece of hardware and I'm pissed when it got dropped.
 >
 > Real work is upstream: [`RanAwaySuccessfully/nvenckepler`](https://github.com/RanAwaySuccessfully/nvenckepler).
 
