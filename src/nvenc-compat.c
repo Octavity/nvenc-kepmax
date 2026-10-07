@@ -47,21 +47,21 @@ static void *nvenc_reroute(enum codec_type codec, obs_data_t *settings, obs_enco
 static const char *h264_nvenc_get_name(void *type_data)
 {
 	UNUSED_PARAMETER(type_data);
-	return "NVIDIA NVENC H.264 (Kepler Plugin)";
+	return "NVIDIA NVENC H.264 (Kepler/Maxwell Plugin)";
 }
 
 #ifdef ENABLE_HEVC
 static const char *hevc_nvenc_get_name(void *type_data)
 {
 	UNUSED_PARAMETER(type_data);
-	return "NVIDIA NVENC HEVC (Kepler Plugin)";
+	return "NVIDIA NVENC HEVC (Kepler/Maxwell Plugin)";
 }
 #endif
 
 static const char *av1_nvenc_get_name(void *type_data)
 {
 	UNUSED_PARAMETER(type_data);
-	return "NVIDIA NVENC AV1 (Kepler Plugin)";
+	return "NVIDIA NVENC AV1 (Kepler/Maxwell Plugin)";
 }
 
 static void *h264_nvenc_create(obs_data_t *settings, obs_encoder_t *encoder)
@@ -341,19 +341,28 @@ struct obs_encoder_info compat_hevc_nvenc_soft_info = {
 
 void register_compat_encoders(void)
 {
-	obs_register_encoder(&compat_h264_nvenc_info);
-	obs_register_encoder(&compat_h264_nvenc_soft_info);
+	if (is_codec_supported(CODEC_H264)) {
+		obs_register_encoder(&compat_h264_nvenc_info);
+		obs_register_encoder(&compat_h264_nvenc_soft_info);
+	}
+
 #ifdef ENABLE_HEVC
-	obs_register_encoder(&compat_hevc_nvenc_info);
-	obs_register_encoder(&compat_hevc_nvenc_soft_info);
+	if (is_codec_supported(CODEC_HEVC)) {
+		obs_register_encoder(&compat_hevc_nvenc_info);
+		obs_register_encoder(&compat_hevc_nvenc_soft_info);
+	}
 #endif
 
 #ifdef REGISTER_FFMPEG_IDS
-	compat_h264_nvenc_soft_info.id = "ffmpeg_nvenc";
-	obs_register_encoder(&compat_h264_nvenc_soft_info);
+	if (is_codec_supported(CODEC_H264)) {
+		compat_h264_nvenc_soft_info.id = "ffmpeg_nvenc";
+		obs_register_encoder(&compat_h264_nvenc_soft_info);
+	}
 #ifdef ENABLE_HEVC
-	compat_hevc_nvenc_soft_info.id = "ffmpeg_hevc_nvenc";
-	obs_register_encoder(&compat_hevc_nvenc_soft_info);
+	if (is_codec_supported(CODEC_HEVC)) {
+		compat_hevc_nvenc_soft_info.id = "ffmpeg_hevc_nvenc";
+		obs_register_encoder(&compat_hevc_nvenc_soft_info);
+	}
 #endif
 #endif
 }

@@ -3,11 +3,11 @@
 #include "obs-nvenc.h"
 
 OBS_DECLARE_MODULE()
-OBS_MODULE_USE_DEFAULT_LOCALE("nvenckepler", "en-US")
+OBS_MODULE_USE_DEFAULT_LOCALE("nvenc-kepmax", "en-US")
 
 MODULE_EXPORT const char *obs_module_description(void)
 {
-	return "NVIDIA Encoder (NVENC) Plugin";
+	return "NVIDIA NVENC plugin for Kepler and Maxwell GPUs";
 }
 
 bool obs_module_load(void)

@@ -284,15 +284,24 @@ static void read_codec_caps(config_t *config, enum codec_type codec, const char 
 
 static bool nvenc_check(void)
 {
-	#ifdef _WIN32
-	char *test_exe = os_get_executable_path_ptr("nvenckepler-test.exe");
+#ifdef _WIN32
+	const char *test_exe_name = "nvenc-kepmax-test.exe";
 #else
-	char *test_exe = os_get_executable_path_ptr("nvenckepler-test");
+	const char *test_exe_name = "nvenc-kepmax-test";
 #endif
+	char *test_exe;
 	os_process_args_t *args;
 	struct dstr caps_str = {0};
 	config_t *config = NULL;
 	bool success = false;
+
+	/* The helper binary ships inside the plugin's data directory. Fall back
+	 * to the OBS executable's directory for layouts that place it there. */
+	test_exe = obs_module_file(test_exe_name);
+	if (!test_exe || !os_file_exists(test_exe)) {
+		bfree(test_exe);
+		test_exe = os_get_executable_path_ptr(test_exe_name);
+	}
 
 	args = os_process_args_create(test_exe);
 
@@ -355,7 +364,7 @@ fail:
 	dstr_free(&caps_str);
 	os_process_args_destroy(args);
 
-	return true;
+	return success;
 }
 
 static const char *nvenc_check_name = "nvenc_check";

@@ -40,39 +40,39 @@ static void nv_bitstream_free(struct nvenc_data *enc, struct nv_bitstream *bs)
 static const char *h264_nvenc_get_name(void *type_data)
 {
 	UNUSED_PARAMETER(type_data);
-	return "NVIDIA NVENC H.264 (Kepler Plugin)";
+	return "NVIDIA NVENC H.264 (Kepler/Maxwell Plugin)";
 }
 
 static const char *h264_nvenc_soft_get_name(void *type_data)
 {
 	UNUSED_PARAMETER(type_data);
-	return "NVIDIA NVENC H.264 (Kepler Plugin) (Fallback)";
+	return "NVIDIA NVENC H.264 (Kepler/Maxwell Plugin) (Fallback)";
 }
 
 #ifdef ENABLE_HEVC
 static const char *hevc_nvenc_get_name(void *type_data)
 {
 	UNUSED_PARAMETER(type_data);
-	return "NVIDIA NVENC HEVC (Kepler Plugin)";
+	return "NVIDIA NVENC HEVC (Kepler/Maxwell Plugin)";
 }
 
 static const char *hevc_nvenc_soft_get_name(void *type_data)
 {
 	UNUSED_PARAMETER(type_data);
-	return "NVIDIA NVENC HEVC (Kepler Plugin) (Fallback)";
+	return "NVIDIA NVENC HEVC (Kepler/Maxwell Plugin) (Fallback)";
 }
 #endif
 
 static const char *av1_nvenc_get_name(void *type_data)
 {
 	UNUSED_PARAMETER(type_data);
-	return "NVIDIA NVENC AV1 (Kepler Plugin)";
+	return "NVIDIA NVENC AV1 (Kepler/Maxwell Plugin)";
 }
 
 static const char *av1_nvenc_soft_get_name(void *type_data)
 {
 	UNUSED_PARAMETER(type_data);
-	return "NVIDIA NVENC AV1 (Kepler Plugin) (Fallback)";
+	return "NVIDIA NVENC AV1 (Kepler/Maxwell Plugin) (Fallback)";
 }
 
 static inline int nv_get_cap(struct nvenc_data *enc, NV_ENC_CAPS cap)
@@ -1249,10 +1249,15 @@ struct obs_encoder_info hevc_nvenc_soft_info = {
 
 void register_encoders(void)
 {
-	obs_register_encoder(&h264_nvenc_info);
-	obs_register_encoder(&h264_nvenc_soft_info);
+	if (is_codec_supported(CODEC_H264)) {
+		obs_register_encoder(&h264_nvenc_info);
+		obs_register_encoder(&h264_nvenc_soft_info);
+	}
+
 #ifdef ENABLE_HEVC
-	obs_register_encoder(&hevc_nvenc_info);
-	obs_register_encoder(&hevc_nvenc_soft_info);
+	if (is_codec_supported(CODEC_HEVC)) {
+		obs_register_encoder(&hevc_nvenc_info);
+		obs_register_encoder(&hevc_nvenc_soft_info);
+	}
 #endif
 }

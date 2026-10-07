@@ -33,13 +33,13 @@
     },
     "platformConfig": {
         "macos": {
-            "bundleId": "xyz.randev.nvenckepler-plugin"
+            "bundleId": "xyz.randev.nvenc-kepmax-plugin"
         }
     },
-    "name": "nvenckepler",
-    "displayName": "NVENC Kepler Plugin",
-    "version": "0.3.0",
+    "name": "nvenc-kepmax",
+    "displayName": "NVENC Kepler/Maxwell Plugin",
+    "version": "0.4.0",
     "author": "RanAwaySuccessfully",
-    "website": "https://github.com/RanAwaySuccessfully/obs-nvenckepler",
+    "website": "https://github.com/Octavity/nvenc-kepmax",
     "email": "RanAwaySuccessfully@users.noreply.github.com"
 }

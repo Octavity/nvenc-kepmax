@@ -247,15 +247,15 @@ jobs:
       - name: Copy portable plugin files 😵‍💫
         run: |
           dpkg-deb -x ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-x86_64*.deb ./portable/
-          mkdir -p ./portable/nvenckepler/bin/64bit
-          mv ./portable/usr/lib/x86_64-linux-gnu/obs-plugins/nvenckepler.so ./portable/nvenckepler/bin/64bit/
-          mv ./portable/usr/share/obs/obs-plugins/nvenckepler ./portable/nvenckepler/data
+          mkdir -p ./portable/nvenc-kepmax/bin/64bit
+          mv ./portable/usr/lib/x86_64-linux-gnu/obs-plugins/nvenc-kepmax.so ./portable/nvenc-kepmax/bin/64bit/
+          mv ./portable/usr/share/obs/obs-plugins/nvenc-kepmax ./portable/nvenc-kepmax/data
 
       - name: Upload portable plugin 😵‍💫
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-${{ matrix.os }}-x86_64-portable-${{ needs.check-event.outputs.commitHash }}
-          path: ./portable/nvenckepler/
+          path: ./portable/nvenc-kepmax/
 
       - uses: actions/cache/save@v4
         if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
