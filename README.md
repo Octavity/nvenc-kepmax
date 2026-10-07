@@ -17,11 +17,15 @@ This plugin has been adapted to use the [official plugin template](https://githu
 
 **NOTE:** NVENC detection works in this fork. The plugin ships a small helper binary (`nvenc-kepmax-test`) that probes the GPU's encoders at load time, so the NVENC encoders only show up when your hardware actually supports them (H.264 on Kepler and GM10x Maxwell, H.264 + HEVC on GM20x Maxwell and newer).
 
+
 ## How to install
 
 Grab the **most recent release from the [Releases section](https://github.com/Octavity/nvenc-kepmax/releases)** and download the one appropriate for your platform.
 
 **You must have the NVIDIA driver v471 installed. Minor version differences like v470 or v475 should be fine. Major differences like v450 or v515 are unlikely to work.** Grab the most recent driver that your graphics card supports.
+
+
+**KEPMAX NOTE** This works for gtx570ti, so this should work regardless of driver number.
 
 ### How to build manually
 
