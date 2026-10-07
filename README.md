@@ -1,5 +1,12 @@
 # NVENC Kepler/Maxwell Plugin
 
+> [!WARNING]
+> **Vibe-coded personal fork.** AI-written, unreviewed, tested on exactly one machine — mine. No support, no promises.
+>
+> Made only for my own **GTX 750 Ti**. NVIDIA killed Kepler's NVENC block, and GM10x (750 / 750 Ti) shares it — "Maxwell" branding or not — so OBS 31+ dropped my card too. I'm still **pissed**.
+>
+> Real work is upstream: [`RanAwaySuccessfully/nvenckepler`](https://github.com/RanAwaySuccessfully/nvenckepler).
+
 ## Introduction
 
 This is pretty much a copy-paste of the existing [obs-nvenc plugin](https://github.com/obsproject/obs-studio/tree/master/plugins/obs-nvenc) that comes bundled with OBS Studio adapted to still be compatible with Kepler and first-generation Maxwell (GM10x, e.g. GTX 750 / 750 Ti) cards. This required a downgrade to remove features introduced after NVIDIA Video Codec SDK v11.1 such as AV1 support and split encoding removed (although they have been removed quite hastily and as such, some non-functional leftovers may still be found here and there).
